@@ -10,7 +10,7 @@
 
 ### 1. Require with [Composer](https://getcomposer.org/)
 ```console
-$ composer require SchuBu/iseed
+$ composer require cheesegrits/iseed
 ```
 
 **Laravel 5.3.7 and below** or **Laravel 4** need specific version.
