@@ -3,7 +3,7 @@
 namespace Cheesegrits\Iseed\Commands;
 
 use Illuminate\Console\Command;
-use src\TableNotFoundException;
+use Cheesegrits\Iseed\Exceptions\TableNotFoundException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 //use function Cheesegrits\Iseed\app;

@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 use Cheesegrits;
-use Exceptions\TableNotFoundException;
+use Cheesegrits\Iseed\Exceptions\TableNotFoundException;
 use Mockery as m;
 use Cheesegrits\Iseed\Tests\TestCase;
 

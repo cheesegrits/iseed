@@ -1,6 +1,6 @@
 <?php
 
-namespace Exceptions;
+namespace Cheesegrits\Iseed\Exceptions;
 
 class TableNotFoundException extends \RuntimeException
 {

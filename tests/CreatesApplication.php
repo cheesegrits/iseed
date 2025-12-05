@@ -6,17 +6,28 @@ use Illuminate\Contracts\Console\Kernel;
 
 trait CreatesApplication
 {
-    /**
-     * Creates the application.
-     *
-     * @return \Illuminate\Foundation\Application
-     */
-    public function createApplication()
+    protected function getPackageProviders($app)
     {
-        $app = require __DIR__.'/../bootstrap/app.php';
+        return [
+        ];
+    }
+    
+//    /**
+//     * Creates the application.
+//     *
+//     * @return \Illuminate\Foundation\Application
+//     */
+//    public function createApplication()
+//    {
+//        $app = require __DIR__.'/../bootstrap/app.php';
+//
+//        $app->make(Kernel::class)->bootstrap();
+//
+//        return $app;
+//    }
 
-        $app->make(Kernel::class)->bootstrap();
-
+    public function getEnvironmentSetUp($app)
+    {
         return $app;
     }
 }

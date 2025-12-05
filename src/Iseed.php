@@ -2,9 +2,9 @@
 
 namespace Cheesegrits\Iseed;
 
+use Cheesegrits\Iseed\Exceptions\TableNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Composer;
-use src\TableNotFoundException;
 
 class Iseed
 {
@@ -39,13 +39,15 @@ class Iseed
      */
     private $composer;
 
+    private $files;
+
     /**
      * Constructs a new instance.
      *
      * @param \Illuminate\Filesystem\Filesystem|bool $filesystem Filesystem
-     * @param \Illuminate\Support\Composer|bool      $composer   Composer
+     * @param \Illuminate\Support\Composer|bool $composer Composer
      */
-    public function __construct(Filesystem $filesystem=null, Composer $composer=null)
+    public function __construct(Filesystem $filesystem = null, Composer $composer = null)
     {
         $this->files = $filesystem ?: new Filesystem;
         $this->composer = $composer ?: new Composer($this->files);
@@ -67,39 +69,40 @@ class Iseed
     /**
      * Generates a seed file.
      *
-     * @param string $table        Table name
-     * @param string $prefix       Seeder class prefix
-     * @param string $suffix       Seeder class suffix
-     * @param string $database     Database connection name
-     * @param int    $max          Maximum seeded entries
-     * @param int    $chunkSize    Size of data chunks
-     * @param string $exclude      Columns to exclude
-     * @param string $prerunEvent  Prerun event name
+     * @param string $table Table name
+     * @param string $prefix Seeder class prefix
+     * @param string $suffix Seeder class suffix
+     * @param string $database Database connection name
+     * @param int $max Maximum seeded entries
+     * @param int $chunkSize Size of data chunks
+     * @param string $exclude Columns to exclude
+     * @param string $prerunEvent Prerun event name
      * @param string $postrunEvent Postrun event name
-     * @param bool   $dumpAuto     Composer auto-dump
-     * @param bool   $indexed      Indexed array
-     * @param int    $orderBy      Column to order by
-     * @param string $direction    Default sort order
-     *
-     * @throws Cheesegrits\Iseed\TableNotFoundException
+     * @param bool $dumpAuto Composer auto-dump
+     * @param bool $indexed Indexed array
+     * @param int $orderBy Column to order by
+     * @param string $direction Default sort order
      *
      * @return void
+     * @throws Cheesegrits\Iseed\TableNotFoundException
+     *
      */
     public function generateSeed(
         $table,
-        $prefix=null,
-        $suffix=null,
-        $database=null,
-        $max=0,
-        $chunkSize=0,
-        $exclude=null,
-        $prerunEvent=null,
-        $postrunEvent=null,
-        $dumpAuto=true,
-        $indexed=true,
-        $orderBy=null,
-        $direction='ASC'
-    ) {
+        $prefix = null,
+        $suffix = null,
+        $database = null,
+        $max = 0,
+        $chunkSize = 0,
+        $exclude = null,
+        $prerunEvent = null,
+        $postrunEvent = null,
+        $dumpAuto = true,
+        $indexed = true,
+        $orderBy = null,
+        $direction = 'ASC'
+    )
+    {
         if (!$database) {
             $database = config('database.default');
         }
@@ -125,8 +128,8 @@ class Iseed
             \File::exists(
                 config('iseed.stub_path')
             ) ?
-            config('iseed.stub_path') :
-            $this->getStubPath() . '/seed.stub'
+                config('iseed.stub_path') :
+                $this->getStubPath() . '/seed.stub'
         );
 
         // Get a seed folder path
@@ -172,15 +175,15 @@ class Iseed
     /**
      * Get the Data
      *
-     * @param string $table     Table name
-     * @param int    $max       Maximum seeded entries
-     * @param string $exclude   Columns to exclude
-     * @param int    $orderBy   Column to order by
+     * @param string $table Table name
+     * @param int $max Maximum seeded entries
+     * @param string $exclude Columns to exclude
+     * @param int $orderBy Column to order by
      * @param string $direction Default sort order
      *
      * @return array
      */
-    public function getData($table, $max, $exclude=null, $orderBy=null, $direction='ASC')
+    public function getData($table, $max, $exclude = null, $orderBy = null, $direction = 'ASC')
     {
         $result = \DB::connection($this->databaseName)->table($table);
 
@@ -242,13 +245,13 @@ class Iseed
     /**
      * Generates a seed class name (also used as a filename)
      *
-     * @param string $table  Table name
+     * @param string $table Table name
      * @param string $prefix Seeder class prefix
      * @param string $suffix Seeder class suffix
      *
      * @return string
      */
-    public function generateClassName($table, $prefix=null, $suffix=null)
+    public function generateClassName($table, $prefix = null, $suffix = null)
     {
         $tableString = '';
         $tableName = explode('_', $table);
@@ -271,14 +274,14 @@ class Iseed
     /**
      * Populate the place-holders in the seed stub.
      *
-     * @param string $class        Class name
-     * @param string $stub         Stub name
-     * @param string $table        Table name
-     * @param string $data         Data object
-     * @param int    $chunkSize    Size of data chunks
-     * @param string $prerunEvent  Prerun event name
+     * @param string $class Class name
+     * @param string $stub Stub name
+     * @param string $table Table name
+     * @param string $data Data object
+     * @param int $chunkSize Size of data chunks
+     * @param string $prerunEvent Prerun event name
      * @param string $postrunEvent Postrun event name
-     * @param bool   $indexed      Indexed array
+     * @param bool $indexed Indexed array
      *
      * @return string
      */
@@ -291,7 +294,8 @@ class Iseed
         $prerunEvent = null,
         $postrunEvent = null,
         $indexed = true
-    ) {
+    )
+    {
         $chunkSize = $chunkSize ?: config('iseed.chunk_size');
 
         $inserts = '';
@@ -307,7 +311,7 @@ class Iseed
         }
 
         $namespace = implode('\\', array_filter(array_map('ucfirst', explode('/', config('iseed.path')))));
-        $stub      = str_replace('{{ namespace }}', $namespace, $stub);
+        $stub = str_replace('{{ namespace }}', $namespace, $stub);
         $stub = str_replace('{{ class }}', $class, $stub);
 
         $prerunEventInsert = '';
@@ -375,7 +379,7 @@ class Iseed
      *
      * @return string
      */
-    protected function prettifyArray($array, $indexed=true)
+    protected function prettifyArray($array, $indexed = true)
     {
         $content = ($indexed)
             ? var_export($array, true)
@@ -426,8 +430,8 @@ class Iseed
     /**
      * Adds new lines to the passed content variable reference.
      *
-     * @param string $content       Passed content
-     * @param int    $numberOfLines Number of new lines
+     * @param string $content Passed content
+     * @param int $numberOfLines Number of new lines
      *
      * @return void
      */
@@ -442,8 +446,8 @@ class Iseed
     /**
      * Adds indentation to the passed content reference.
      *
-     * @param string $content         Passed content
-     * @param int    $numberOfIndents Number of indents
+     * @param string $content Passed content
+     * @param int $numberOfIndents Number of indents
      *
      * @return void
      */
@@ -478,9 +482,9 @@ class Iseed
      *
      * @param string $className Database seeder class name
      *
+     * @return bool
      * @link https://github.com/JeffreyWay/Laravel-4-Generators Kudoz to this package
      *
-     * @return bool
      */
     public function updateDatabaseSeederRunMethod($className)
     {

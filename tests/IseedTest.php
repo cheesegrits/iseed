@@ -2,9 +2,9 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-use Exceptions\TableNotFoundException;
+use Cheesegrits\Iseed\Exceptions\TableNotFoundException;
 use Mockery as m;
-use PHPUnit\Framework\TestCase;
+use Cheesegrits\Iseed\Tests\TestCase;
 
 class IseedTest extends TestCase
 {
